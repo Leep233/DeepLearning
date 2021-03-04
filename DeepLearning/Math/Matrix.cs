@@ -15,9 +15,9 @@ namespace DeepLearning.Math
 
                 double result = this[0,0];
 
-                for (int i = 1; i < Row; i++)
+                for (int i = 0; i < Row; i++)
                 {
-                    for (int j = 1; j < Column; j++)
+                    for (int j = 0; j < Column; j++)
                     {
                         if (result < this[i, j]) result = this[i, j];
                     }

@@ -4,8 +4,54 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DNUnitTest
 {
+
     [TestClass]
     public class UnitTest1 {
+
+
+       
+        [TestMethod]
+        public void MeanSquaredError() {
+
+            Matrix t = new Matrix(new double[,] { {                
+                0,0,1,0 ,0,0 ,0,0 ,0,0
+                } });
+            Matrix y = new Matrix(new double[,] { {
+
+              0.1,0.05,0.6,0.0,0.05,0.1,0.0,0.1,0.0,0.0
+                } });
+
+            double loss = LossFunctions.MeanSquaredError(y, t);
+
+             y = new Matrix(new double[,] { {
+
+              0.1,0.05,0.1,0.0,0.05,0.1,0.0,0.6,0.0,0.0
+                } });
+
+             loss = LossFunctions.MeanSquaredError(y, t);
+        }
+
+        [TestMethod]
+        public void CrossEntropyError() {
+
+
+            Matrix t = new Matrix(new double[,] { {
+                0,0,1,0 ,0,0 ,0,0 ,0,0
+                } });
+            Matrix y = new Matrix(new double[,] { {
+
+              0.1,0.05,0.6,0.0,0.05,0.1,0.0,0.1,0.0,0.0
+                } });
+
+            double loss = LossFunctions.CrossEntropyError(y, t);
+
+            y = new Matrix(new double[,] { {
+
+              0.1,0.05,0.1,0.0,0.05,0.1,0.0,0.6,0.0,0.0
+                } });
+
+            loss = LossFunctions.CrossEntropyError(y, t);
+        }
 
         [TestMethod]
         public void TestSoftmax() {
