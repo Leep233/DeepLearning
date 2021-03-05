@@ -8,14 +8,105 @@ namespace DeepLearingTest
     {
         static void Main(string[] args)
         {
-            Matrix t = new Matrix(new double[3, 3] {
-            {0,1,0 },
-            {1,0,0 },
-            { 0,0,1},
+            //TestGradient01();
+            GradientDescent();
+            //CrossEntropyError();
+            Console.Read();
+        }
+        public static void GradientDescent() {
+
+            Matrix x = new Matrix(new double[,] {
+
+                { -3,4 },  
+
             });
 
-            CrossEntropyError();
-            Console.Read();
+            CommonFunctions.GradientDescent(Function02,ref x,1e-10,100);
+
+            for (int i = 0; i < x.Row; i++)
+            {
+                for (int j = 0; j < x.Column; j++)
+                {
+                    Console.WriteLine(x[i, j]);
+                }
+            }
+
+        }
+        public static void TestGradient02()
+        {
+
+            Matrix x = new Matrix(new double[,] {
+
+                { 3,4 },
+                 { 0,2 },
+                  { 3,0 }
+
+            });
+
+
+            Matrix grad = CommonFunctions.Gradient(Function02, x);
+            for (int i = 0; i < grad.Row; i++)
+            {
+                for (int j = 0; j < grad.Column; j++)
+                {
+                    Console.WriteLine(grad[i,j]);
+                }
+            }
+        }
+
+        public static void TestGradient01() {
+
+            Matrix x = new Matrix(new double[,] {
+
+                {5 },{ 10}
+            
+            });
+
+            Matrix grad = CommonFunctions.Gradient(Function01, x);
+            for (int i = 0; i < grad.Row; i++)
+            {
+                for (int j = 0; j < grad.Column; j++)
+                {
+                    Console.WriteLine(grad[i, j]);
+                }
+            }
+
+
+        }
+
+        public static Matrix Function02(Matrix x) {
+            Matrix result = new Matrix(x.Row,x.Column);
+
+            double temp = 9;
+
+            for (int i = 0; i < x.Row; i++)
+            {
+                for (int j = 0; j < x.Column; j++)
+                {
+                    temp += System.Math.Pow(x[i,j],2);
+
+                    result[i, j] = temp;
+
+                }
+            }
+
+           // result[0, 0] = temp;
+
+            return result;
+        }
+
+        public static Matrix Function01(Matrix x) {
+            Matrix result = new Matrix(x.Row,x.Column);
+
+            for (int i = 0; i < x.Row; i++)
+            {
+                for (int j = 0; j < x.Column; j++)
+                {
+                    double temp = x[i, j];
+                    result[i, j] = 0.01 * System.Math.Pow(temp, 2) + 0.1 * temp;
+                }
+            }
+            return result;
         }
 
         public static void CrossEntropyError()
