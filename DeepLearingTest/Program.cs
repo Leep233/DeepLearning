@@ -8,11 +8,33 @@ namespace DeepLearingTest
     {
         static void Main(string[] args)
         {
+            
+             TestSimpleNet();
+       
             //TestGradient01();
-            GradientDescent();
+            //GradientDescent();
             //CrossEntropyError();
             Console.Read();
         }
+     
+        static void TestSimpleNet() {
+
+            Matrix x =  new Matrix(new double[,] { { 0.6, 0.9 } });
+
+            Matrix t = new Matrix(new double[,] { { 0, 0, 1 } });
+
+            SimpleNet net = new SimpleNet(x,t);
+           
+            Console.WriteLine(net.Predict());
+
+            Console.WriteLine($"损失值：{net.Loss(t)}");
+
+           Matrix dw = CommonFunctions.Gradient(net.Loss, net.w);
+
+            Console.WriteLine($"{dw}");
+
+        }
+
         public static void GradientDescent() {
 
             Matrix x = new Matrix(new double[,] {
@@ -21,13 +43,13 @@ namespace DeepLearingTest
 
             });
 
-            CommonFunctions.GradientDescent(Function02,ref x,1e-10,100);
+            CommonFunctions.GradientDescent(Function02,ref x,10,100);
 
             for (int i = 0; i < x.Row; i++)
             {
                 for (int j = 0; j < x.Column; j++)
                 {
-                    Console.WriteLine(x[i, j]);
+                    Console.WriteLine(x[i, j].ToString("#.########E+000"));
                 }
             }
 
@@ -62,7 +84,7 @@ namespace DeepLearingTest
             
             });
 
-            Matrix grad = CommonFunctions.Gradient(Function01, x);
+            Matrix grad = CommonFunctions.Gradient(Function01,  x);
             for (int i = 0; i < grad.Row; i++)
             {
                 for (int j = 0; j < grad.Column; j++)
