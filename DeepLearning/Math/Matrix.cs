@@ -40,6 +40,70 @@ namespace DeepLearning.Math
             _content = new double[row, col];
         }
 
+        public Matrix T { get {
+
+                Matrix matrix = new Matrix(Column,Row);
+
+                for (int i = 0; i < Row; i++)
+                {
+                    for (int j = 0; j < Column; j++)
+                    {
+                        matrix[j, i] = this[i, j];
+                    }
+                }
+
+                return matrix;
+            
+            } }
+
+        internal static double Sum(Matrix matrix)
+        {
+            double sum = 0;
+            for (int i = 0; i < matrix.Row; i++)
+            {
+                for (int j = 0; j < matrix.Column; j++)
+                {
+                    sum += matrix[i, j];
+                }
+            }
+            return sum;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mode">0 列最大值下标，1 行最大值下标</param>
+        /// <returns></returns>
+        public double[] Argmax(int mode = 0) 
+        {         
+
+            int x = mode == 0 ? Column:Row;
+
+            int y = mode == 0 ? Row:Column;
+
+            double[] indexs = new double[x];
+
+            for (int i = 0; i < x; i++)
+            {
+                double temp = double.MinValue;
+
+                int index= 0;
+
+                for (int j=0; j < y; j++)
+                {
+                    double num = mode == 0 ? this[j, i]:this[i, j];
+                    
+                        if (temp < num)
+                        {
+                            index = j;
+                            temp = num;
+                        }                 
+                }
+                indexs[i] = index;
+            }
+            return indexs;
+        }
+
         public override string ToString()
         {
             string result = "";
@@ -54,6 +118,21 @@ namespace DeepLearning.Math
             }
 
             return result;
+        }
+
+        public static Matrix Sqrt(Matrix x) {
+
+            Matrix matrix = new Matrix(x.Row, x.Column);
+
+            for (int i = 0; i < x.Row; i++)
+            {
+                for (int j = 0; j < x.Column; j++)
+                {
+                    matrix[i,j] = System.Math.Sqrt(x[i,j]);
+                }
+            }
+            return matrix;
+        
         }
 
         public static Matrix Dot(Matrix matrix01, Matrix matrix02) {
@@ -99,18 +178,57 @@ namespace DeepLearning.Math
         }
         public static Matrix operator -(Matrix matrix01, Matrix matrix02) {
 
-            if (matrix01.Row != matrix02.Row || matrix01.Column != matrix02.Column) throw new Exception("两个矩阵大小必须一致");
+            Matrix result = null;
 
-            Matrix result = new Matrix(matrix01.Row,matrix01.Column);
-
-            for (int i = 0; i < matrix01.Row; i++)
+            if (matrix02.Row == 1 && matrix01.Column == matrix02.Column)
             {
-                for (int j = 0; j < matrix01.Column; j++)
+
+                result = new Matrix(matrix01.Row, matrix01.Column);
+
+                for (int i = 0; i < matrix01.Row; i++)
                 {
-                    result[i, j] = matrix01[i, j] - matrix02[i, j];
+                    for (int j = 0; j < matrix01.Column; j++)
+                    {
+                        result[i, j] = matrix01[i, j] - matrix02[0, j];
+                    }
+                }
+
+            }
+            else if (matrix01.Row == 1 && matrix01.Column == matrix02.Column)
+            {
+                result = new Matrix(matrix02.Row, matrix02.Column);
+
+                for (int i = 0; i < matrix01.Row; i++)
+                {
+                    for (int j = 0; j < matrix01.Column; j++)
+                    {
+                        result[i, j] = matrix01[0, j] - matrix02[i, j];
+                    }
                 }
             }
-            return result;
+            else if (matrix01.Row == matrix02.Row && matrix01.Column == matrix02.Column) {
+
+                result = new Matrix(matrix01.Row, matrix01.Column);
+
+                for (int i = 0; i < matrix01.Row; i++)
+                {
+                    for (int j = 0; j < matrix01.Column; j++)
+                    {
+                        result[i, j] = matrix01[i, j] - matrix02[i, j];
+                    }
+                }
+
+            }
+            else
+            {
+                throw new Exception("两个矩阵大小必须一致");
+            }
+
+
+
+
+
+                return result;
         }
         public static Matrix operator -(double value,Matrix matrix01)
         {
@@ -148,18 +266,61 @@ namespace DeepLearning.Math
         public static Matrix operator +(Matrix matrix01, Matrix matrix02)
         {
 
-            if (matrix01.Row != matrix02.Row || matrix01.Column != matrix02.Column) throw new Exception("两个矩阵大小必须一致");
+            Matrix result = null;
 
-            Matrix result = new Matrix(matrix01.Row, matrix01.Column);
-
-            for (int i = 0; i < matrix01.Row; i++)
+            if (matrix02.Row == 1 && matrix01.Column == matrix02.Column)
             {
-                for (int j = 0; j < matrix01.Column; j++)
+
+                result = new Matrix(matrix01.Row, matrix01.Column);
+
+                for (int i = 0; i < matrix01.Row; i++)
                 {
-                    result[i, j] = matrix01[i, j] + matrix02[i, j];
+                    for (int j = 0; j < matrix01.Column; j++)
+                    {
+                        result[i, j] = matrix01[i, j] + matrix02[0, j];
+                    }
+                }
+
+            }
+            else if (matrix01.Row == 1 && matrix01.Column == matrix02.Column)
+            {
+                result = new Matrix(matrix02.Row, matrix02.Column);
+
+                for (int i = 0; i < matrix01.Row; i++)
+                {
+                    for (int j = 0; j < matrix01.Column; j++)
+                    {
+                        result[i, j] = matrix01[0, j] + matrix02[i, j];
+                    }
                 }
             }
+            else if (matrix01.Row == matrix02.Row && matrix01.Column == matrix02.Column)
+            {
+
+                result = new Matrix(matrix01.Row, matrix01.Column);
+
+                for (int i = 0; i < matrix01.Row; i++)
+                {
+                    for (int j = 0; j < matrix01.Column; j++)
+                    {
+                        result[i, j] = matrix01[i, j] + matrix02[i, j];
+                    }
+                }
+
+            }
+            else
+            {
+                throw new Exception("两个矩阵大小必须一致");
+            }
+
+
+
+
+
             return result;
+
+
+          
         }
         public static Matrix operator +(double value, Matrix matrix01)
         {

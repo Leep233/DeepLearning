@@ -1,22 +1,61 @@
 ﻿using System;
+using System.Collections.Generic;
 using DeepLearning;
+using DeepLearning.Activation;
 using DeepLearning.Math;
+using DeepLearning.Net;
+using MNIST;
 
 namespace DeepLearingTest
 {
     class Program
     {
+        static string imgsPath = @"D:\Projects\Visual Studio Projects\DeepLearning\Datas\train-images.idx3-ubyte";
+        static string labelsPath = @"D:\Projects\Visual Studio Projects\DeepLearning\Datas\train-labels.idx1-ubyte";
+        static MNISTImages images;
+        static MNISTLabels labels;
+
         static void Main(string[] args)
         {
-            
-             TestSimpleNet();
-       
+ 
+
+             NetTester.Inistance.TestTwoLayerNet();
+
+            //TestTwoLayerNet();
+            //double? result = CommonFunctions.NormalDistribution();
+
+            //Console.WriteLine(Math.Log(Math.E));
+
+            // Console.WriteLine(CommonFunctions.StandardNormalDistributionRondam(3,3));
+
+            //   TestSimpleNet();
+
             //TestGradient01();
             //GradientDescent();
             //CrossEntropyError();
             Console.Read();
         }
-     
+        static void TestArgmax() {
+
+            Matrix matrix = new Matrix(new double[,] {
+
+            {9,5,2 },
+            {3,7,9 },
+       //     { 4,8,9}
+            });
+
+            Double[] array = matrix.Argmax(1);
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                Console.WriteLine(array[i]);
+            }
+        }
+  
+
+
+
+   
         static void TestSimpleNet() {
 
             Matrix x =  new Matrix(new double[,] { { 0.6, 0.9 } });
