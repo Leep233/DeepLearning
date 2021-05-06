@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeepLearning
 {
@@ -15,14 +17,22 @@ namespace DeepLearning
 
             double sum = 0;
 
-            for (int i = 0; i < matrix.Row; i++)
-            {
+            int row = matrix.Row;
+            int col = matrix.Column;
+
+            Mutex mutex = new Mutex();
+
+            Parallel.For(0, row, i => {
                 for (int j = 0; j < matrix.Column; j++)
                 {
+                    mutex.WaitOne();
                     sum += System.Math.Pow(matrix[i, j], 2);
+                    mutex.ReleaseMutex();
                 }
-            }
+            });
 
+
+        
             return sum * 0.5;
 
         }
@@ -34,36 +44,50 @@ namespace DeepLearning
 
             if (y.Row == t.Row || y.Column == t.Column) {
                 //one-hot形式 0 1 0 0 0 0 0
-                Matrix indexs = new Matrix(t.Row, 1);
-                for (int i = 0; i < t.Row; i++)
-                {
-                    for (int j = 0; j < t.Column; j++)
+                int row = t.Row;
+
+                int col = t.Column;
+
+                Matrix indexs = new Matrix(row, 1);
+         
+                Parallel.For(0, row, i=> {
+                    for (int j = 0; j < col; j++)
                     {
-                        if (t[i, j] == 1) {
-                            indexs[i,0] = j;
+                        if (t[i, j] == 1)
+                        {
+                            indexs[i, 0] = j;
                             break;
                         }
                     }
-                }
+                });
                  t = indexs;
             }
 
             double loss = 0;
 
-            for (int i = 0; i < y.Row; i++)
-            {
+            int y_row = y.Row;
 
-                for (int j = 0; j < t.Column; j++)
-                {
-                    double temp = (int)t[i, j];
+            int t_col = t.Column;
 
-                     temp = y[i, (int)t[i, j]];
+            using (Mutex mutex = new Mutex()) {
+                Parallel.For(0, y_row, i => {
+                    for (int j = 0; j < t_col; j++)
+                    {
+                        double temp = (int)t[i, j];
 
-                    temp = System.Math.Log(temp + DELTA);
+                        temp = y[i, (int)t[i, j]];
 
-                    loss += temp;
-                }
+                        temp = System.Math.Log(temp + DELTA);
+
+                        mutex.WaitOne();
+                        loss += temp;
+                        mutex.ReleaseMutex();
+                    }
+
+                });
+
             }
+       
 
             return -loss/t.Row;
 

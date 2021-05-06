@@ -15,19 +15,19 @@ namespace DeepLearingTest
         /// <summary>
         /// MNIST训练数据图片文件路径
         /// </summary>
-        string train_imgs_path = @"D:\Projects\Visual Studio Projects\DeepLearning\Datas\train-images.idx3-ubyte";
+        string train_imgs_path = $"{AppDomain.CurrentDomain.BaseDirectory}\\Datas\\train-images.idx3-ubyte";
         /// <summary>
         /// MNIST训练数据标签文件
         /// </summary>
-        string train_labels_path = @"D:\Projects\Visual Studio Projects\DeepLearning\Datas\train-labels.idx1-ubyte";
+        string train_labels_path = $"{AppDomain.CurrentDomain.BaseDirectory}\\Datas\\train-labels.idx1-ubyte";
         /// <summary>
         /// 测试数据图片文件
         /// </summary>
-        string test_imgs_path = @"D:\Projects\Visual Studio Projects\DeepLearning\Datas\t10k-images.idx3-ubyte";
+        string test_imgs_path = $"{AppDomain.CurrentDomain.BaseDirectory}\\Datas\\t10k-images.idx3-ubyte";
         /// <summary>
         /// 测试数据标签文件
         /// </summary>
-        string test_labels_path = @"D:\Projects\Visual Studio Projects\DeepLearning\Datas\t10k-labels.idx1-ubyte";
+        string test_labels_path = $"{AppDomain.CurrentDomain.BaseDirectory}\\Datas\\t10k-labels.idx1-ubyte";
         /// <summary>
         /// 训练数据个数
         /// </summary>
@@ -46,13 +46,17 @@ namespace DeepLearingTest
 
             Matrix x_train = new Matrix(TrainDataCount, 784);
 
-            for (int i = 0; i < x_train.Row; i++)
-            {
-                for (int j = 0; j < x_train.Column; j++)
+            int x_train_row = x_train.Row;
+            int y_train_col = x_train.Column;
+
+            Parallel.For(0, x_train_row, i => {
+                for (int j = 0; j < y_train_col; j++)
                 {
-                    x_train[i, j] = train_images.Images[i][j]/255.0;
+                    x_train[i, j] = train_images.Images[i][j] / 255.0;
                 }
-            }
+            });
+
+        
 
             MNISTLabels train_labels = MNISTLabels.Load(train_labels_path, TrainDataCount);
 
@@ -68,14 +72,18 @@ namespace DeepLearingTest
 
             Matrix x_test = new Matrix(TestDataCount, 784);
 
-            for (int i = 0; i < x_test.Row; i++)
-            {
-                for (int j = 0; j < x_test.Column; j++)
-                {
-                    x_test[i, j] = test_images.Images[i][j]/255.0; 
-                }
-            }
+            int x_test_row = x_test.Row;
+            int y_test_col = x_test.Column;
 
+
+            Parallel.For(0, x_test_row, i => {
+                for (int j = 0; j < y_test_col; j++)
+                {
+                    x_test[i, j] = test_images.Images[i][j] / 255.0;
+                }
+            });
+
+        
             MNISTLabels test_labels = MNISTLabels.Load(test_labels_path, TestDataCount);
 
             Matrix t_test = new Matrix(TestDataCount, 10);
@@ -107,6 +115,8 @@ namespace DeepLearingTest
         public async void TestTwoLayerNet()
         {
 
+          // TrainingData data = TrainingData.Load("sampleWidget.td");
+
             List<Matrix> matrices = await LoadMNISTAsync();
 
             Matrix x_train = matrices[0];
@@ -115,13 +125,14 @@ namespace DeepLearingTest
             // Matrix x_test = matrices[2];
             // Matrix y_test = matrices[3];
 
-            int itersNum = 10000;
+            int itersNum = 3000;
             int batch_size = 100;
 
-            double learing_rate = 0.1;
+ 
+            IOptimize optimizer = new SGD();// SGD();//AdaGrad();// Momentum();// SGD();
 
-            IOptimize optimizer = new AdaGrad();// SGD();//AdaGrad();// Momentum();// SGD();
              net = new TwoLayerNet( 784, 50, 10);
+
           //  net.print += Net_print;
             Matrix x_batch = new Matrix(batch_size, 784);
 
@@ -167,10 +178,15 @@ namespace DeepLearingTest
 
                 Console.WriteLine($"损失值:{net.Loss(x_batch, t_batch)} ");
 
-                if (i % 300 == 0) Console.WriteLine($"识别精度：{net.Accuracy(x_train, t_train)}");
-
+                if (i % 300 == 0)
+                {
+                    Console.WriteLine("识别精度计算中...");
+                    Console.WriteLine($"识别精度：{net.Accuracy(x_train, t_train)}");
+                }
 
             }
+
+            net.Save("sampleWidget.td");
 
         }
       

@@ -17,6 +17,8 @@ namespace DeepLearingTest
 
         static void Main(string[] args)
         {
+
+
  
 
              NetTester.Inistance.TestTwoLayerNet();

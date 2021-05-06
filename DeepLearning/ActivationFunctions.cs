@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DeepLearning
 {
@@ -17,42 +18,45 @@ namespace DeepLearning
 
             double c = matrix.Max;
 
-            Matrix result = new Matrix(matrix.Row, matrix.Column);
+            int row = matrix.Row;
+            int col = matrix.Column;
 
-            double[] sums = new double[matrix.Row];
+            Matrix result = new Matrix(row, col);
 
-            for (int i = 0; i < matrix.Row; i++)
-            {
-                for (int j = 0; j < matrix.Column; j++)
+            double[] sums = new double[row];
+
+            Parallel.For(0, row,i=> {
+                for (int j = 0; j < col; j++)
                 {
                     double num = System.Math.Exp(matrix[i, j] - c);
                     sums[i] += num;
                     result[i, j] = num;
                 }
-            }
+            });
 
-            for (int i = 0; i < matrix.Row; i++)
-            {
-                for (int j = 0; j < matrix.Column; j++)
+            Parallel.For(0, row, i => {
+                for (int j = 0; j <col; j++)
                 {
                     result[i, j] /= sums[i];
                 }
-            }
+            });
 
             return result ;
         }
        
         public static Matrix ReLU(Matrix matrix)
         {
-            Matrix result = new Matrix(matrix.Row, matrix.Column);
+            int c = matrix.Column;
+            int r = matrix.Row;
 
-            for (int i = 0; i < matrix.Row; i++)
-            {
-                for (int j = 0; j < matrix.Column; j++)
+            Matrix result = new Matrix(r,c );
+
+            Parallel.For(0, r, i => {
+                for (int j = 0; j < c; j++)
                 {
                     result[i, j] = matrix[i, j] <= 0 ? 0 : matrix[i, j];
                 }
-            }
+            });
             return result;
         }
         public static Matrix Step(Matrix matrix)
@@ -68,18 +72,21 @@ namespace DeepLearning
             }
             return result;
         }
+       
         public static Matrix Sigmoid(Matrix matrix) {
-            Matrix result = new Matrix(matrix.Row,matrix.Column);
 
-            for (int i = 0; i < matrix.Row; i++)
-            {
-                for (int j = 0; j < matrix.Column; j++)
+            int c = matrix.Column;
+            int r = matrix.Row;
+
+            Matrix result = new Matrix(r, c);
+
+            Parallel.For(0, r, i => {
+                for (int j = 0; j <c; j++)
                 {
-                    result[i,j] = 1 / (1 + System.Math.Exp(-matrix[i, j]));
+                    result[i, j] = 1 / (1 + System.Math.Exp(-matrix[i, j]));
                 }
-            }
-
-            return result;        
+            });
+            return result;
         }
 
     }
