@@ -4,11 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeepLearning.Net
 {
     public class TwoLayerNet
     {
+        public List<double> losses { get; private set; } = new List<double>();
+
+        public event Action<double> LossUpdated;
 
         /// <summary>
         ///参数数组 保存各层权重和偏置
@@ -38,6 +43,8 @@ namespace DeepLearning.Net
         /// 第二次 线性组合
         /// </summary>
         Affine affineLayer02;
+        private Dropout dropout01;
+        private Dropout dropout02;
 
         /// <summary>
         /// 
@@ -66,6 +73,9 @@ namespace DeepLearning.Net
             affineLayer01 = new Affine(Params[0], Params[1]);
             layers.Add("A1", affineLayer01);
 
+            dropout01 = new Dropout(0.15);
+
+            layers.Add("D1", dropout01);
             ///第一次非线性激活
             layers.Add("ReLU1", new ReLU());
 
@@ -73,6 +83,8 @@ namespace DeepLearning.Net
             affineLayer02 = new Affine(Params[2], Params[3]);
             layers.Add("A2", affineLayer02);
 
+            dropout02 = new Dropout(0.15);
+            layers.Add("D2", dropout02);
             ///输出层 非线性激活 输出
             softmaxWithLoss = new SoftmaxWithLoss();
 
@@ -107,13 +119,19 @@ namespace DeepLearning.Net
             double[] tMaxIndex = t.Argmax(1);
 
             int sum = 0;
+            int length = yMaxIndex.Length;
 
-            for (int i = 0; i < yMaxIndex.Length; i++)
+            Parallel.For(0, length, i =>
             {
-                if (yMaxIndex[i].Equals(tMaxIndex[i]))
-                    sum++;
-            }
 
+                if (yMaxIndex[i].Equals(tMaxIndex[i])) {
+
+                    Interlocked.Increment(ref sum);
+                }
+ 
+            });
+
+        
             // # BUG  修复
             // return sum / (float)t.Column;
 
@@ -130,9 +148,13 @@ namespace DeepLearning.Net
 
             Matrix y = (layers["A1"] as Affine).Forward(x);
 
+            y = (layers["D1"] as Dropout).Forward(y);
+
             y = (layers["ReLU1"] as ReLU).Forward(y);
 
             y = (layers["A2"] as Affine).Forward(y);
+
+            y = (layers["D2"] as Dropout).Forward(y);
 
             return y;
         }
@@ -146,8 +168,10 @@ namespace DeepLearning.Net
         public double Loss(Matrix x, Matrix t)
         {
             Matrix y = Predict(x);
+          double loss =  softmaxWithLoss.Forward(y, t)[0, 0]; 
+            LossUpdated?.Invoke(loss);
 
-            return softmaxWithLoss.Forward(y, t)[0, 0];
+            return loss;
         }
 
         /// <summary>
@@ -159,16 +183,19 @@ namespace DeepLearning.Net
         public Matrix[] Gradient(Matrix x, Matrix t)
         {
 
-            Loss(x, t);
+            losses.Add( Loss(x, t));
 
             ///反向传播求导
 
             Matrix dout = softmaxWithLoss.Backward(null);
 
+            dout = dropout02.Backward(dout);
 
             dout = affineLayer02.Backward(dout);
 
             dout = (layers["ReLU1"] as ReLU).Backward(dout);
+
+            dout = dropout01.Backward(dout);
 
             dout = (affineLayer01).Backward(dout);
 

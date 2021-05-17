@@ -19,6 +19,6 @@
             </Button>
             <Button Width="120" Height="30" Click="OnClickPredictBtn">预测</Button>
         </DockPanel>
-        <RichTextBox x:Name="_msgRTB" Margin="10" Grid.Row="1"></RichTextBox>
+        <RichTextBox x:Name="_msgRTB" Margin="10" Grid.Row="1" ></RichTextBox>
     </Grid>
 </Window>

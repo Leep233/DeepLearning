@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeepLearingTest", "DeepLear
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML.MNIST.SampleClient", "ML.MNIST.SampleClient\ML.MNIST.SampleClient.csproj", "{DB495810-A785-4184-A55F-6FFB57DC637B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML.Drawing", "ML.Drawing\ML.Drawing.csproj", "{EC76AEB1-DEBD-4767-B6CE-3506ADAC3F17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{DB495810-A785-4184-A55F-6FFB57DC637B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB495810-A785-4184-A55F-6FFB57DC637B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB495810-A785-4184-A55F-6FFB57DC637B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC76AEB1-DEBD-4767-B6CE-3506ADAC3F17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC76AEB1-DEBD-4767-B6CE-3506ADAC3F17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC76AEB1-DEBD-4767-B6CE-3506ADAC3F17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC76AEB1-DEBD-4767-B6CE-3506ADAC3F17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,34 @@
+﻿<Window x:Class="ML.Drawing.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ML.Drawing" xmlns:oxy="http://oxyplot.org/wpf"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Button Width="120" Command="{Binding ClickTrainNetEvent}">开始</Button>
+        <!--
+          <oxy:PlotView Grid.Row="1" Model="{Binding Path= SimplePlotModel}"></oxy:PlotView>
+        -->
+        <oxy:Plot Title="训练曲线" Grid.Row="1">
+            <oxy:Plot.Series>
+                <oxy:LineSeries
+                    Title="损失值"
+                    ItemsSource="{Binding LossPoints}"
+                    MarkerType="Circle"
+                     />
+                <oxy:LineSeries
+                    Title="精准度"
+                    ItemsSource="{Binding AccuracyPoints}"
+                    MarkerType="Circle"
+                    />
+            </oxy:Plot.Series>
+        </oxy:Plot>
+
+    </Grid>
+</Window>

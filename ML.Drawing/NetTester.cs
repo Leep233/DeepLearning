@@ -7,12 +7,34 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DeepLearingTest
+namespace ML.Drawing
 {
-   public class NetTester : Tester<NetTester>
+    public abstract class Tester<T> where T : Tester<T>, new()
+    {
+
+        static T _instance = default(T);
+        public static T Inistance
+        {
+            get
+            {
+
+                if (_instance == null)
+                    _instance = new T();
+                return _instance;
+            }
+        }
+
+
+
+
+    }
+
+    public class NetTester : Tester<NetTester>
     {
         public List<double> losses { get { return net.losses; } }
         public List<double> accuracies = new List<double>();
+
+        public bool Stop { get; set; } = false;
 
         public event Action<double> LossUpdated;
         public event Action<double> AccuracyUpdated;
@@ -157,6 +179,8 @@ namespace DeepLearingTest
             for (int i = 0; i < itersNum; i++)
             {
 
+                if (Stop) break;
+
                 for (int j = 0; j < batch_size; j++)
                 {
                     indexs[j] = random.Next(TrainDataCount);
@@ -190,7 +214,7 @@ namespace DeepLearingTest
 
                 Console.WriteLine($"损失值:{net.Loss(x_batch, t_batch)} ");
 
-                if (i % 300 == 0)
+                if (i % 100 == 0)
                 {
                     Console.WriteLine("识别精度计算中...");
                     double accuracy = net.Accuracy(x_train, t_train);

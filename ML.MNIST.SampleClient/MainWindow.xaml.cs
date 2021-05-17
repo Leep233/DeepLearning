@@ -165,5 +165,7 @@ namespace ML.MNIST.SampleClient
 
             Console.WriteLine(matrix);
         }
+
+ 
     }
 }
