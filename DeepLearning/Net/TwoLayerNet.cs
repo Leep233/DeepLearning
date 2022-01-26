@@ -135,7 +135,7 @@ namespace DeepLearning.Net
             // # BUG  修复
             // return sum / (float)t.Column;
 
-            return sum / (float)t.Row;
+            return sum / (float)t.X;
         }
 
         /// <summary>
@@ -256,23 +256,23 @@ namespace DeepLearning.Net
             data.Columns = new int[grads.Length];
 
             Matrix matrix = affineLayer01.w;
-            data.Rows[0] = matrix.Row;
-            data.Columns[0] = matrix.Column;
+            data.Rows[0] = matrix.X;
+            data.Columns[0] = matrix.Y;
             data.Content.Add(matrix);
 
             matrix = affineLayer01.b;
-            data.Rows[1] = matrix.Row;
-            data.Columns[1] = matrix.Column;
+            data.Rows[1] = matrix.X;
+            data.Columns[1] = matrix.Y;
             data.Content.Add(matrix);
 
             matrix = affineLayer02.w;
-            data.Rows[2] = matrix.Row;
-            data.Columns[2] = matrix.Column;
+            data.Rows[2] = matrix.X;
+            data.Columns[2] = matrix.Y;
             data.Content.Add(matrix);
 
             matrix = affineLayer02.b;
-            data.Rows[3] = matrix.Row;
-            data.Columns[3] = matrix.Column;
+            data.Rows[3] = matrix.X;
+            data.Columns[3] = matrix.Y;
             data.Content.Add(matrix);
 
             data.SaveAsync(fileName);

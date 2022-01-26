@@ -12,8 +12,8 @@ namespace DeepLearning.Activation
 
         public Matrix Forward(Matrix x, Matrix t = null) {
 
-            int row = x.Row;
-            int col = x.Column;
+            int row = x.X;
+            int col = x.Y;
 
             Matrix result = new Matrix(row, col);
             mask = new Matrix(row,col);

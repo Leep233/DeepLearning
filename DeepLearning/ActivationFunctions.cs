@@ -18,8 +18,8 @@ namespace DeepLearning
 
             double c = matrix.Max;
 
-            int row = matrix.Row;
-            int col = matrix.Column;
+            int row = matrix.X;
+            int col = matrix.Y;
 
             Matrix result = new Matrix(row, col);
 
@@ -46,8 +46,8 @@ namespace DeepLearning
        
         public static Matrix ReLU(Matrix matrix)
         {
-            int c = matrix.Column;
-            int r = matrix.Row;
+            int c = matrix.Y;
+            int r = matrix.X;
 
             Matrix result = new Matrix(r,c );
 
@@ -61,11 +61,11 @@ namespace DeepLearning
         }
         public static Matrix Step(Matrix matrix)
         {
-            Matrix result = new Matrix(matrix.Row, matrix.Column);
+            Matrix result = new Matrix(matrix.X, matrix.Y);
 
-            for (int i = 0; i < matrix.Row; i++)
+            for (int i = 0; i < matrix.X; i++)
             {
-                for (int j = 0; j < matrix.Column; j++)
+                for (int j = 0; j < matrix.Y; j++)
                 {
                     result[i, j] = matrix[i,j]<=0?0:1;
                 }
@@ -75,8 +75,8 @@ namespace DeepLearning
        
         public static Matrix Sigmoid(Matrix matrix) {
 
-            int c = matrix.Column;
-            int r = matrix.Row;
+            int c = matrix.Y;
+            int r = matrix.X;
 
             Matrix result = new Matrix(r, c);
 

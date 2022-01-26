@@ -26,7 +26,7 @@ namespace DeepLearning
                 for (int i = 0; i < v.Length; i++)
                 {
                     Matrix matrix = paramMap[i];
-                    v[i] = new Matrix(matrix.Row, matrix.Column);
+                    v[i] = new Matrix(matrix.X, matrix.Y);
                 }
             }
 
@@ -55,7 +55,7 @@ namespace DeepLearning
                 for (int i = 0; i < h.Length; i++)
                 {
                     Matrix matrix = paramMap[i];
-                    h[i] = new Matrix(matrix.Row, matrix.Column);
+                    h[i] = new Matrix(matrix.X, matrix.Y);
                 }
             }
 

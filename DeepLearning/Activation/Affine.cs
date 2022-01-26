@@ -31,11 +31,11 @@ namespace DeepLearning.Activation
 
             Matrix dx = Matrix.Dot(dout,w.T);
             dw = Matrix.Dot(x.T, dout);
-             db = new Matrix(1, dout.Column);
-            for (int i = 0; i < dout.Column; i++)
+             db = new Matrix(1, dout.Y);
+            for (int i = 0; i < dout.Y; i++)
             {
                 double temp = 0;
-                for (int j = 0; j < dout.Row; j++)
+                for (int j = 0; j < dout.X; j++)
                 {
                     temp += dout[j, i];
                 }

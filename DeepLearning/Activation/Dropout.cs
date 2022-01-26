@@ -34,7 +34,7 @@ namespace DeepLearning.Activation
 
             if (TrainFlag)
             {
-                Mask = Rand(x.Row, x.Column);
+                Mask = Rand(x.X, x.Y);
                 result = x * Mask;
             }
             else {

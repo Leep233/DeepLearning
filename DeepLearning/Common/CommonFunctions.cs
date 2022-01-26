@@ -28,9 +28,9 @@ namespace DeepLearning
 
             double h = 1e-4;
 
-            int x = t.Row;
+            int x = t.X;
 
-            int y = t.Column;            
+            int y = t.Y;            
 
             Matrix grad = new Matrix(x,y);
 
@@ -56,15 +56,15 @@ namespace DeepLearning
         }
 
         public static Matrix Gradient(Func<Matrix, double> func, Matrix t) {
-            Matrix grad = new Matrix(t.Row,t.Column);
+            Matrix grad = new Matrix(t.X,t.Y);
             double h = 1e-4;
             //double  = 0;
             double l1,l2, tmp = 0;
             
 
-            for (int i = 0; i < t.Row; i++)
+            for (int i = 0; i < t.X; i++)
             {
-                for (int j = 0; j < t.Column; j++)
+                for (int j = 0; j < t.Y; j++)
                 {
                     tmp = t[i, j];
 
@@ -147,6 +147,90 @@ namespace DeepLearning
 
         }
 
+        public static  Matrix Convolution2D(Matrix matrix, Matrix core, int stride = 1, int padding = 0)
+        {
+
+            int _2Padding = 2 * padding;
+
+            int row = (matrix.X + _2Padding - core.X) / stride + 1;
+
+            int col = (matrix.Y + _2Padding - core.Y) / stride + 1;
+
+            Matrix result = new Matrix(row, col);
+
+            double sum = 0;
+
+            for (int x = 0; x < row; x++)
+            {
+
+                for (int y = 0; y < col; y++)
+                {
+                    sum = 0;
+
+                    for (int i = 0; i < core.X; i++)
+                    {
+                        for (int j = 0; j < core.Y; j++)
+                        {
+                            int r = i + x - padding;
+
+                            int c = j + y - padding;
+
+                            if (r < 0 || c < 0 || r >= matrix.X || c >= matrix.Y) continue;
+
+                            sum += matrix[r, c] * core[i, j];
+                        }
+                    }
+
+                    result[x, y] = sum;
+                }
+            }
+            return result;
+        }
+
+        public static Matrix Convolution3D(Matrix3D matrix, Matrix3D core, int stride = 1, int padding=0) {
+
+            int _2Padding = 2 * padding;
+
+            int row = (matrix.X + _2Padding - core.X) / stride + 1;
+
+            int col = (matrix.Y + _2Padding - core.Y) / stride + 1;
+
+            Matrix result = new Matrix(row, col);
+
+            double sum = 0;
+
+            for (int x = 0; x < row; x++)
+            {
+
+                for (int y = 0; y < col; y++)
+                {
+                    sum = 0;
+
+                    for (int size = 0; size < core.Z; size++)
+                    {
+
+                        for (int i = 0; i < core.X; i++)
+                        {
+                            for (int j = 0; j < core.Y; j++)
+                            {
+                                int r = i + x - padding;
+
+                                int c = j + y - padding;
+
+                                if (r < 0 || c < 0 || r >= matrix.X || c >= matrix.Y) continue;
+
+                                sum += matrix[size,r, c] * core[size,i, j];
+                            }
+                        }
+                    }                
+
+                    result[x, y] = sum;
+                }
+            }
+
+            return result;
+
+        }
 
         public static Matrix Image2Column(Matrix3DCollection collection) {
 

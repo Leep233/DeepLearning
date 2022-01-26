@@ -136,8 +136,8 @@ namespace ML.MNIST.SampleClient
 
             DeepLearning.Math.Matrix x_train = new DeepLearning.Math.Matrix(1,784);
 
-            int x_train_row = x_train.Row;
-            int y_train_col = x_train.Column;
+            int x_train_row = x_train.X;
+            int y_train_col = x_train.Y;
 
             Parallel.For(0, x_train_row, i => {
                 for (int j = 0; j < y_train_col; j++)
@@ -152,9 +152,9 @@ namespace ML.MNIST.SampleClient
 
             string msg = "预测：";
 
-            for (int i = 0; i < matrix.Row; i++)
+            for (int i = 0; i < matrix.X; i++)
             {
-                for (int j = 0; j < matrix.Column; j++)
+                for (int j = 0; j < matrix.Y; j++)
                 {
                     msg += $"[{j}]:{matrix[i,j]:P2}\n";
                 }

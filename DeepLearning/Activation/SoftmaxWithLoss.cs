@@ -22,7 +22,7 @@ namespace DeepLearning.Activation
 
         public Matrix Backward(Matrix dout)
         {
-            int batchSize = t.Row;
+            int batchSize = t.X;
             Matrix matrix = (y - t) / batchSize;
             return matrix;
         }

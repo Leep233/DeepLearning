@@ -69,9 +69,9 @@ namespace DeepLearning
                     {
                         Matrix matrix = Content[i];
 
-                        for (int m = 0; m < matrix.Row; m++)
+                        for (int m = 0; m < matrix.X; m++)
                         {
-                            for (int n = 0; n < matrix.Column; n++)
+                            for (int n = 0; n < matrix.Y; n++)
                             {
                                 ms.Write(BitConverter.GetBytes(matrix[m, n]), 0, doubleSize);
                             }

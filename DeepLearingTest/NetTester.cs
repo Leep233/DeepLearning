@@ -53,8 +53,8 @@ namespace DeepLearingTest
 
             Matrix x_train = new Matrix(TrainDataCount, 784);
 
-            int x_train_row = x_train.Row;
-            int y_train_col = x_train.Column;
+            int x_train_row = x_train.X;
+            int y_train_col = x_train.Y;
 
             Parallel.For(0, x_train_row, i =>
             {
@@ -70,7 +70,7 @@ namespace DeepLearingTest
 
             Matrix t_train = new Matrix(TrainDataCount, 10);
             //转成one-hot
-            for (int i = 0; i < t_train.Row; i++)
+            for (int i = 0; i < t_train.X; i++)
             {
                 t_train[i, train_labels.Labels[i]] = 1;
             }
@@ -80,8 +80,8 @@ namespace DeepLearingTest
 
             Matrix x_test = new Matrix(TestDataCount, 784);
 
-            int x_test_row = x_test.Row;
-            int y_test_col = x_test.Column;
+            int x_test_row = x_test.X;
+            int y_test_col = x_test.Y;
 
 
             Parallel.For(0, x_test_row, i =>
@@ -97,7 +97,7 @@ namespace DeepLearingTest
 
             Matrix t_test = new Matrix(TestDataCount, 10);
 
-            for (int i = 0; i < t_test.Row; i++)
+            for (int i = 0; i < t_test.X; i++)
             {
                 t_test[i, test_labels.Labels[i]] = 1;
             }
@@ -168,12 +168,12 @@ namespace DeepLearingTest
 
                     //  Console.WriteLine(index);
 
-                    for (int col = 0; col < x_batch.Column; col++)
+                    for (int col = 0; col < x_batch.Y; col++)
                     {
                         x_batch[row, col] = x_train[index, col];
 
                     }
-                    for (int col = 0; col < t_batch.Column; col++)
+                    for (int col = 0; col < t_batch.Y; col++)
                     {
                         t_batch[row, col] = t_train[index, col];//      
                     }

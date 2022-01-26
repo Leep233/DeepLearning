@@ -17,13 +17,13 @@ namespace DeepLearning
 
             double sum = 0;
 
-            int row = matrix.Row;
-            int col = matrix.Column;
+            int row = matrix.X;
+            int col = matrix.Y;
 
             Mutex mutex = new Mutex();
 
             Parallel.For(0, row, i => {
-                for (int j = 0; j < matrix.Column; j++)
+                for (int j = 0; j < matrix.Y; j++)
                 {
                     mutex.WaitOne();
                     sum += System.Math.Pow(matrix[i, j], 2);
@@ -42,11 +42,11 @@ namespace DeepLearning
         public static double CrossEntropyError(Matrix y, Matrix t) {
 
 
-            if (y.Row == t.Row || y.Column == t.Column) {
+            if (y.X == t.X || y.Y == t.Y) {
                 //one-hot形式 0 1 0 0 0 0 0
-                int row = t.Row;
+                int row = t.X;
 
-                int col = t.Column;
+                int col = t.Y;
 
                 Matrix indexs = new Matrix(row, 1);
          
@@ -65,9 +65,9 @@ namespace DeepLearning
 
             double loss = 0;
 
-            int y_row = y.Row;
+            int y_row = y.X;
 
-            int t_col = t.Column;
+            int t_col = t.Y;
 
             using (Mutex mutex = new Mutex()) {
                 Parallel.For(0, y_row, i => {
@@ -89,7 +89,7 @@ namespace DeepLearning
             }
        
 
-            return -loss/t.Row;
+            return -loss/t.X;
 
         }
 

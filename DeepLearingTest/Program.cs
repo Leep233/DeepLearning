@@ -86,9 +86,9 @@ namespace DeepLearingTest
 
             CommonFunctions.GradientDescent(Function02,ref x,10,100);
 
-            for (int i = 0; i < x.Row; i++)
+            for (int i = 0; i < x.X; i++)
             {
-                for (int j = 0; j < x.Column; j++)
+                for (int j = 0; j < x.Y; j++)
                 {
                     Console.WriteLine(x[i, j].ToString("#.########E+000"));
                 }
@@ -108,9 +108,9 @@ namespace DeepLearingTest
 
 
             Matrix grad = CommonFunctions.Gradient(Function02, x);
-            for (int i = 0; i < grad.Row; i++)
+            for (int i = 0; i < grad.X; i++)
             {
-                for (int j = 0; j < grad.Column; j++)
+                for (int j = 0; j < grad.Y; j++)
                 {
                     Console.WriteLine(grad[i,j]);
                 }
@@ -126,9 +126,9 @@ namespace DeepLearingTest
             });
 
             Matrix grad = CommonFunctions.Gradient(Function01,  x);
-            for (int i = 0; i < grad.Row; i++)
+            for (int i = 0; i < grad.X; i++)
             {
-                for (int j = 0; j < grad.Column; j++)
+                for (int j = 0; j < grad.Y; j++)
                 {
                     Console.WriteLine(grad[i, j]);
                 }
@@ -138,13 +138,13 @@ namespace DeepLearingTest
         }
 
         public static Matrix Function02(Matrix x) {
-            Matrix result = new Matrix(x.Row,x.Column);
+            Matrix result = new Matrix(x.X,x.Y);
 
             double temp = 9;
 
-            for (int i = 0; i < x.Row; i++)
+            for (int i = 0; i < x.X; i++)
             {
-                for (int j = 0; j < x.Column; j++)
+                for (int j = 0; j < x.Y; j++)
                 {
                     temp += System.Math.Pow(x[i,j],2);
 
@@ -159,11 +159,11 @@ namespace DeepLearingTest
         }
 
         public static Matrix Function01(Matrix x) {
-            Matrix result = new Matrix(x.Row,x.Column);
+            Matrix result = new Matrix(x.X,x.Y);
 
-            for (int i = 0; i < x.Row; i++)
+            for (int i = 0; i < x.X; i++)
             {
-                for (int j = 0; j < x.Column; j++)
+                for (int j = 0; j < x.Y; j++)
                 {
                     double temp = x[i, j];
                     result[i, j] = 0.01 * System.Math.Pow(temp, 2) + 0.1 * temp;
