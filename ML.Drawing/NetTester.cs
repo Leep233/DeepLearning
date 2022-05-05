@@ -1,6 +1,8 @@
 ﻿using DeepLearning;
+using DeepLearning.Interfaces;
 using DeepLearning.Math;
 using DeepLearning.Net;
+using DeepLearning.Optimize;
 using MNIST;
 using System;
 using System.Collections.Generic;
@@ -23,9 +25,6 @@ namespace ML.Drawing
                 return _instance;
             }
         }
-
-
-
 
     }
 

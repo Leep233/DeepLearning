@@ -30,19 +30,21 @@ namespace DeepLearning.Activation
         public Matrix Backward(Matrix dout) {
 
             Matrix dx = Matrix.Dot(dout,w.T);
+
             dw = Matrix.Dot(x.T, dout);
+
              db = new Matrix(1, dout.Y);
+
             for (int i = 0; i < dout.Y; i++)
             {
                 double temp = 0;
+
                 for (int j = 0; j < dout.X; j++)
                 {
                     temp += dout[j, i];
                 }
                 db[0, i] = temp;
             }
-
-           // Console.WriteLine(net.Params[net.Params.Length - 1]);
 
             return dx;
         

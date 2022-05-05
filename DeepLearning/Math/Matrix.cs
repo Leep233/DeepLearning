@@ -19,7 +19,6 @@ namespace DeepLearning.Math
         {
             get
             {
-
                 double result = this[0, 0];
 
                 for (int i = 0; i < X; i++)
@@ -61,6 +60,7 @@ namespace DeepLearning.Math
             }
             return result;
         }
+       
         public Matrix(double[,] content)
         {
             _content = content;
@@ -91,6 +91,7 @@ namespace DeepLearning.Math
             double [] column = new double[size];
 
             int width = -1;
+
             int height = -1;
 
             for (int i = 0; i < hw; i++)
@@ -153,20 +154,18 @@ namespace DeepLearning.Math
 
             Parallel.For(0, rowSize, i =>
             {
-
                 for (int j = 0; j < colSize; j++)
                 {
-
                     mutex.WaitOne();
 
                     result += matrix[i, j];
 
                     mutex.ReleaseMutex();
                 }
-
             });
 
             mutex.Dispose();
+
             return result;// BitConverter.ToDouble(BitConverter.GetBytes(result),0);
         }
 
@@ -223,7 +222,6 @@ namespace DeepLearning.Math
 
         public static Matrix Sqrt(Matrix x)
         {
-
             Matrix matrix = new Matrix(x.X, x.Y);
 
             int rowSize = matrix.X;
@@ -232,7 +230,6 @@ namespace DeepLearning.Math
 
             Parallel.For(0, rowSize, i =>
             {
-
                 for (int j = 0; j < colSize; j++)
                 {
                     matrix[i, j] = System.Math.Sqrt(x[i, j]);
@@ -247,15 +244,17 @@ namespace DeepLearning.Math
         {
 
             if (matrix01.Y != matrix02.X) throw new Exception("矩阵1列与矩阵2的行必须一致");
+
             Matrix result = new Matrix(matrix01.X, matrix02.Y);
 
             int row01 = matrix01.X;
+
             int col01 = matrix01.Y;
+
             int col02 = matrix02.Y;
 
             Parallel.For(0, row01, i =>
             {
-
                 for (int j = 0; j < col02; j++)
                 {
                     double temp = 0;
@@ -267,11 +266,81 @@ namespace DeepLearning.Math
 
                     result[i, j] = temp;
                 }
-
             });
             return result;
 
         }
+
+
+        private static Matrix ColumnSubtractMatrix(Matrix matrix01, Matrix matrix02)
+        {
+            Matrix result = new Matrix(matrix02.X, matrix02.Y);
+
+            int r = matrix01.X;
+
+            Parallel.For(0, r, i =>
+            {
+                for (int j = 0; j < matrix01.Y; j++)
+                {
+                    result[i, j] = matrix01[0, j] - matrix02[i, j];
+                }
+
+            });
+
+            return result;
+        }
+
+        private static Matrix MatrixSubtractColumn(Matrix matrix01, Matrix matrix02)
+        {
+            Matrix result = new Matrix(matrix01.X, matrix01.Y);
+
+            int r = matrix01.X;
+
+            Parallel.For(0, r, i =>
+            {
+                for (int j = 0; j < matrix01.Y; j++)
+                {
+                    result[i, j] = matrix01[i, j] - matrix02[0, j];
+                }
+            });
+
+            return result;
+        }
+
+        private static Matrix ColumnAddMatrix(Matrix matrix01, Matrix matrix02)
+        {
+
+            Matrix result = new Matrix(matrix02.X, matrix02.Y);
+
+            int r = matrix01.X;
+
+            Parallel.For(0, r, i =>
+            {
+                for (int j = 0; j < matrix01.Y; j++)
+                {
+                    result[i, j] = matrix01[0, j] + matrix02[i, j];
+                }
+            });
+
+            return result;
+        }
+
+        private static Matrix MatrixAddColumn(Matrix matrix01, Matrix matrix02)
+        {
+            Matrix result = new Matrix(matrix01.X, matrix01.Y);
+
+            int r = matrix01.X;
+
+            Parallel.For(0, r, i =>
+            {
+                for (int j = 0; j < matrix01.Y; j++)
+                {
+                    result[i, j] = matrix01[i, j] + matrix02[0, j];
+                }
+            });
+            return result;
+        }
+
 
         public static bool operator ==(Matrix matrix01, Matrix matrix02)
         {
@@ -299,39 +368,19 @@ namespace DeepLearning.Math
             Matrix result = null;
 
             int r = matrix01.X;
+
             int c = matrix01.Y;
 
             if (matrix02.X == 1 && matrix01.Y == matrix02.Y)
             {
-
-                result = new Matrix(matrix01.X, matrix01.Y);
-
-                Parallel.For(0, r, i =>
-                {
-                    for (int j = 0; j < matrix01.Y; j++)
-                    {
-                        result[i, j] = matrix01[i, j] - matrix02[0, j];
-                    }
-
-                });
-
+                result = MatrixSubtractColumn(matrix01, matrix02);
             }
             else if (matrix01.X == 1 && matrix01.Y == matrix02.Y)
             {
-                result = new Matrix(matrix02.X, matrix02.Y);
-
-                Parallel.For(0, r, i =>
-                {
-                    for (int j = 0; j < matrix01.Y; j++)
-                    {
-                        result[i, j] = matrix01[0, j] - matrix02[i, j];
-                    }
-
-                });
+                result = ColumnSubtractMatrix(matrix01, matrix02);              
             }
             else if (matrix01.X == matrix02.X && matrix01.Y == matrix02.Y)
             {
-
                 result = new Matrix(matrix01.X, matrix01.Y);
 
                 Parallel.For(0, r, i =>
@@ -340,7 +389,6 @@ namespace DeepLearning.Math
                     {
                         result[i, j] = matrix01[i, j] - matrix02[i, j];
                     }
-
                 });
             }
             else
@@ -351,14 +399,14 @@ namespace DeepLearning.Math
 
             return result;
         }
+
+
         public static Matrix operator -(double value, Matrix matrix01)
         {
-
-            // if (matrix01.Row != matrix02.Row || matrix01.Column != matrix02.Column) throw new Exception("两个矩阵大小必须一致");
-
             Matrix result = new Matrix(matrix01.X, matrix01.Y);
 
             int r = matrix01.X;
+
             int c = matrix01.Y;
 
             Parallel.For(0, r, i =>
@@ -366,27 +414,18 @@ namespace DeepLearning.Math
 
                 for (int j = 0; j < matrix01.Y; j++)
                 {
-                    result[i, j] = value - matrix01[i, j];//matrix02[i, j];
+                    result[i, j] = value - matrix01[i, j];
                 }
             });
-            /*
-            for (int i = 0; i < matrix01.Row; i++)
-            {
-                for (int j = 0; j < matrix01.Column; j++)
-                {
-                    result[i, j] = value- matrix01[i, j] ;//matrix02[i, j];
-                }
-            }*/
+        
             return result;
         }
         public static Matrix operator -(Matrix matrix01, double value)
         {
-
-            // if (matrix01.Row != matrix02.Row || matrix01.Column != matrix02.Column) throw new Exception("两个矩阵大小必须一致");
-
             Matrix result = new Matrix(matrix01.X, matrix01.Y);
 
             int r = matrix01.X;
+
             int c = matrix01.Y;
 
             Parallel.For(0, r, i =>
@@ -397,62 +436,32 @@ namespace DeepLearning.Math
                     result[i, j] = matrix01[i, j] - value;//matrix02[i, j];
                 }
             });
-            /*
-            for (int i = 0; i < matrix01.Row; i++)
-            {
-                for (int j = 0; j < matrix01.Column; j++)
-                {
-                    result[i, j] = matrix01[i, j] - value;//matrix02[i, j];
-                }
-            }*/
+            
             return result;
         }
 
         public static Matrix operator +(Matrix matrix01, Matrix matrix02)
         {
-
             Matrix result = null;
 
             int r = matrix01.X;
-            int c = matrix01.Y;
 
+            int c = matrix01.Y;
 
             if (matrix02.X == 1 && matrix01.Y == matrix02.Y)
             {
-
-                result = new Matrix(matrix01.X, matrix01.Y);
-
-                Parallel.For(0, r, i =>
-                {
-
-                    for (int j = 0; j < matrix01.Y; j++)
-                    {
-                        result[i, j] = matrix01[i, j] + matrix02[0, j];
-                    }
-                });
-
+                result = MatrixAddColumn(matrix01, matrix02);              
             }
             else if (matrix01.X == 1 && matrix01.Y == matrix02.Y)
             {
-                result = new Matrix(matrix02.X, matrix02.Y);
-
-                Parallel.For(0, r, i =>
-                {
-
-                    for (int j = 0; j < matrix01.Y; j++)
-                    {
-                        result[i, j] = matrix01[0, j] + matrix02[i, j];
-                    }
-                });
+                result = ColumnAddMatrix(matrix01, matrix02);              
             }
             else if (matrix01.X == matrix02.X && matrix01.Y == matrix02.Y)
             {
-
                 result = new Matrix(matrix01.X, matrix01.Y);
 
                 Parallel.For(0, r, i =>
                 {
-
                     for (int j = 0; j < matrix01.Y; j++)
                     {
                         result[i, j] = matrix01[i, j] + matrix02[i, j];
@@ -468,43 +477,31 @@ namespace DeepLearning.Math
 
         }
 
+      
         public static Matrix operator +(double value, Matrix matrix01)
         {
-
-            // if (matrix01.Row != matrix02.Row || matrix01.Column != matrix02.Column) throw new Exception("两个矩阵大小必须一致");
-
-
             int r = matrix01.X;
+
             int c = matrix01.Y;
 
             Matrix result = new Matrix(r, c);
 
             Parallel.For(0, r, i =>
             {
-
                 for (int j = 0; j < matrix01.Y; j++)
                 {
                     result[i, j] = value + matrix01[i, j];//matrix02[i, j];
                 }
             });
-
-            /*
-
-               for (int i = 0; i < matrix01.Row; i++)
-               {
-                   for (int j = 0; j < matrix01.Column; j++)
-                   {
-                       result[i, j] = value + matrix01[i, j];//matrix02[i, j];
-                   }
-               }*/
+         
             return result;
         }
+
         public static Matrix operator +(Matrix matrix01, double value)
         {
 
-            // if (matrix01.Row != matrix02.Row || matrix01.Column != matrix02.Column) throw new Exception("两个矩阵大小必须一致");
-
             int r = matrix01.X;
+
             int c = matrix01.Y;
 
             Matrix result = new Matrix(r, c);
@@ -517,22 +514,14 @@ namespace DeepLearning.Math
                     result[i, j] = matrix01[i, j] + value;//matrix02[i, j];
                 }
             });
-            /*
-            Matrix result = new Matrix(matrix01.Row, matrix01.Column);
-
-            for (int i = 0; i < matrix01.Row; i++)
-            {
-                for (int j = 0; j < matrix01.Column; j++)
-                {
-                    result[i, j] = matrix01[i, j] + value;//matrix02[i, j];
-                }
-            }*/
+          
             return result;
         }
         public static Matrix operator *(Matrix matrix01, Matrix matrix02)
         {
 
             int r = matrix01.X;
+
             int c = matrix01.Y;
 
             if (r != matrix02.X || c != matrix02.Y) throw new Exception("两个矩阵大小必须一致");
@@ -541,7 +530,6 @@ namespace DeepLearning.Math
 
             Parallel.For(0, r, i =>
             {
-
                 for (int j = 0; j < matrix01.Y; j++)
                 {
                     result[i, j] = matrix01[i, j] * matrix02[i, j];
@@ -550,6 +538,7 @@ namespace DeepLearning.Math
 
             return result;
         }
+
         public static Matrix operator *(double value, Matrix matrix01)
         {
             int r = matrix01.X;
@@ -569,6 +558,7 @@ namespace DeepLearning.Math
 
             return result;
         }
+      
         public static Matrix operator *(Matrix matrix01, double value)
         {
 
@@ -594,19 +584,18 @@ namespace DeepLearning.Math
             if (matrix01.X != matrix02.X || matrix01.Y != matrix02.Y) throw new Exception("两个矩阵大小必须一致");
 
             int r = matrix01.X;
+
             int c = matrix01.Y;
 
             Matrix result = new Matrix(r, c);
 
             Parallel.For(0, r, i =>
             {
-
                 for (int j = 0; j < matrix01.Y; j++)
                 {
                     result[i, j] = matrix01[i, j] / matrix02[i, j];
                 }
             });
-
 
             return result;
         }
